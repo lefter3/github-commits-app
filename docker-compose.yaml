@@ -1,0 +1,60 @@
+services:
+  app_be:
+    container_name: app_be
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    depends_on:
+      - app_db
+      - app_redis
+    ports:
+      - "3000:3000"
+    env_file:
+      - .dev.env
+    networks:
+      - app_network
+
+  # Postgres service
+  app_db:
+    container_name: app_db
+    image: postgres:15.4-alpine3.18
+    ports:
+      - "54321:5432"
+    env_file:
+      - .dev.env
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+  # Redis service
+  app_redis:
+    container_name: app_redis
+    image: redis:7.2-alpine3.18
+    ports:
+      - "6333:6379"
+    env_file:
+      - .dev.env
+    command: ["redis-server"]
+    networks:
+      - app_network
+    mem_limit: 100m
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 2s
+      retries: 10
+
+  app_fe:
+    container_name: app_fe
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    ports:
+      - "8080:8080"
+    networks: 
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge

@@ -1,4 +1,4 @@
-# use this template for `.dev.env` in root of project
+# use this template for `.env` in root of project
 # Postgres
 POSTGRES_DB=db_name
 POSTGRES_USER=user_here

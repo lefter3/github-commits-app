@@ -10,4 +10,8 @@ REDIS_PASSWORD=strong_password_here
 REDIS_PORT=6333
 
 # AUTH / JWT
-SECRET_KEY=strong_encrypted_key_here
+JWT_SECRET=strong_encrypted_key_here
+
+# github
+GITHUB_CLIENT_ID=YOUR_CLIENT_ID
+GITHUB_CLIENT_SECRET=YOUR_CLIENT_SECRET

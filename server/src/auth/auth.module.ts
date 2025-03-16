@@ -18,6 +18,6 @@ import { JwtStrategy } from './strategy/jwt.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [GithubStrategy, JwtStrategy],
+  providers: [JwtStrategy],
 })
 export class AuthModule {}

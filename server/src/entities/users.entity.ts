@@ -9,6 +9,9 @@ export class User extends BaseEntity {
   @Column({ type: 'varchar' })
   email: string;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', unique: true })
   username: string;
+
+  @Column({ type: Date })
+  commitCountLastUpdate: Date;
 }

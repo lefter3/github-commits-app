@@ -5,6 +5,8 @@ import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { GithubApiModule } from './github-api/github-api.module';
+import { CommitCountModule } from './commit-count/commit-count.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { GithubApiModule } from './github-api/github-api.module';
     DatabaseModule,
     AuthModule,
     GithubApiModule,
+    CommitCountModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

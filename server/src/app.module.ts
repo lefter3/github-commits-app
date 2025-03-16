@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { GithubApiModule } from './github-api/github-api.module';
 import { CommitCountModule } from './commit-count/commit-count.module';
 import { UsersModule } from './users/users.module';
+import { QueuesModule } from './queues/queues.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UsersModule } from './users/users.module';
       isGlobal: true,
     }),
     DatabaseModule,
+    QueuesModule,
     AuthModule,
     GithubApiModule,
     CommitCountModule,

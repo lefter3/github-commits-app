@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { CommitCountService } from './commit-count.service';
 import { CommitCountController } from './commit-count.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CommitCount } from 'src/entities/commitsCount';
+import { CommitCount } from 'src/entities/commitsCount.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CommitCount])],

@@ -12,6 +12,6 @@ export class CommitCount extends BaseEntity {
   @Column({ type: 'varchar' })
   username: string;
 
-  @Column({ type: Date })
-  commitsDate: Date;
+  @Column({ type: 'varchar' })
+  commitsDate: string;
 }

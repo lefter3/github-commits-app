@@ -4,13 +4,15 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { GithubStrategy } from './strategy/github.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
+    UsersModule,
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => {
         return {
-          signOptions: { expiresIn: '10h' },
+          signOptions: { expiresIn: '24h' },
           secret: configService.get<string>('JWT_SECRET'),
         };
       },
@@ -18,6 +20,6 @@ import { JwtStrategy } from './strategy/jwt.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [JwtStrategy],
+  providers: [JwtStrategy, GithubStrategy],
 })
 export class AuthModule {}

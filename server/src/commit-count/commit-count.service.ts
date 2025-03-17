@@ -11,19 +11,15 @@ export class CommitCountService {
     private commitCountRepo: Repository<CommitCount>,
   ) {}
 
-  async saveCommitCountRecords(commitCounts: CommitCountDto[]) {
+  async saveCommitCountRecords(
+    commitCounts: CommitCountDto[],
+  ): Promise<number> {
     if (!commitCounts.length) {
-      return true;
+      return 0;
     }
-    try {
-      const result: InsertResult =
-        await this.commitCountRepo.insert(commitCounts);
-      console.log('Inserted commit counts:', result.identifiers);
-      return result;
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
+    const result: InsertResult =
+      await this.commitCountRepo.insert(commitCounts);
+    return result.identifiers.length;
   }
 
   async updateTodayRecord(payload: CommitCountDto) {
@@ -38,12 +34,5 @@ export class CommitCountService {
   }
 
   async getCommitCountRecords() {
-    try {
-      const result = await this.commitCountRepo.find(); // group by repo name
-      return result;
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
-  }
+    return this.commitCountRepo.find();
 }

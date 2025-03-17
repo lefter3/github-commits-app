@@ -4,7 +4,6 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-console.log(process.env.DB_HOST);
 export const typeOrmConfig = (): PostgresConnectionOptions => ({
   type: 'postgres',
   host: 'localhost',
@@ -12,8 +11,8 @@ export const typeOrmConfig = (): PostgresConnectionOptions => ({
   username: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DB,
-  entities: ['dist/**/*.entity{.ts,.js}'],
-  migrations: ['dist/database/migrations/*{.ts,.js}'],
+  entities: ['src/**/*.entity{.ts,.js}'],
+  migrations: ['src/database/migrations/*{.ts,.js}'],
 });
 
 export default new DataSource({

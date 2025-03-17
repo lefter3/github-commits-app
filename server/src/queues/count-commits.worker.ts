@@ -15,7 +15,6 @@ export class CountCommitsWorker extends WorkerHost {
     super();
   }
   async process(job: Job<CountCommitsJob>) {
-    console.log('Counting commits for', job.data);
     const commitCounts: { [key: string]: number } = {};
     const newCounts: CommitCountDto[] = [];
     const iterator = this.githubApiService.getUserCommitsForRepo(job.data);
@@ -48,7 +47,12 @@ export class CountCommitsWorker extends WorkerHost {
         });
       }
     }
-    return await this.commitCountService.saveCommitCountRecords(newCounts);
+    const saved = this.commitCountService.saveCommitCountRecords(newCounts);
+    return {
+      newCounts: saved,
+      repository: job.data.repo,
+      author: job.data.author,
+    };
   }
 
   @OnWorkerEvent('completed')

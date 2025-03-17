@@ -18,7 +18,6 @@ export class AuthController {
   @Get('callback')
   @UseGuards(AuthGuard('github'))
   authCallback(@Req() req: AuthRequest) {
-    console.log(req.user);
     this.userService.afterGithubLogin(req.user); // await?
     return {
       token: this.jwt.sign(req.user),

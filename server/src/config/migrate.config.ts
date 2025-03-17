@@ -4,7 +4,6 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-console.log(process.env.DB_HOST);
 export const typeOrmConfig = (): PostgresConnectionOptions => ({
   type: 'postgres',
   host: '172.17.0.1',

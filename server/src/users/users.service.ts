@@ -19,14 +19,13 @@ export class UsersService {
   ) {}
 
   async afterGithubLogin(payload: TokenPayload) {
-    const { ghToken, username, displayName } = payload;
+    const { ghToken, username } = payload;
     let since: string | null = null;
 
     const user = await this.userRepository.findOneBy({ username });
     if (!user) {
       await this.userRepository.save({
         username,
-        displayName,
         lastLogin: getYMDFormat(),
       });
     } else {

@@ -19,9 +19,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "migrate": "node dist/scripts/migrate.js",
-    "typeorm": "tsx ./node_modules/typeorm/cli.js",
-    "typeorm:generate": "typeorm migration:generate -d src/config/local.config.ts",
-    "typeorm:migrate": "tsx ./node_modules/typeorm/cli.js migration:run -d dist/config/typeorm.config.js",
+    "typeorm:generate": "tsx ./node_modules/typeorm/cli.js migration:generate -d src/config/local.config.ts ./src/database/migrations/init",
+    "typeorm:migrate": "tsx ./node_modules/typeorm/cli.js migration:run -d src/config/local.config.ts",
     "typeorm:revert": "npx typeorm-ts-node-esm migration:revert -d src/config/typeorm.config.ts",
     "typeorm:drop": "npx typeorm-ts-node-esm schema:drop -d src/config/typeorm.config.ts",
     "typeorm:show": "npx typeorm-ts-node-esm migration:show -d src/config/typeorm.config.ts"

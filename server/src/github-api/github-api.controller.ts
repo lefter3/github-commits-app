@@ -11,6 +11,6 @@ export class GithubApiController {
 
   @Get('repositories')
   getRepositories(@Req() req: AuthRequest, @Query() query: PaginationDto) {
-    return this.ghService.listRepositoriesForUser(req.user, query);
+    return this.ghService.listRepositoriesForUser(req.user.ghToken, query);
   }
 }

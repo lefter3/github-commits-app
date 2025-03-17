@@ -2,14 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { Octokit } from '@octokit/rest';
 import { GetUserCommitsDto } from 'src/dto/countCommits.dto';
 import { PaginationDto } from 'src/dto/pagination.dto';
-import { TokenPayload } from 'src/dto/request.dto';
 
 @Injectable()
 export class GithubApiService {
   constructor() {}
 
-  listRepositoriesForUser(payload: TokenPayload, query: PaginationDto) {
-    const octokit = new Octokit({ auth: payload.ghToken });
+  listRepositoriesForUser(token: string, query: PaginationDto) {
+    const octokit = new Octokit({ auth: token });
     return octokit.rest.repos.listForAuthenticatedUser({
       //listReposStarredByAuthenticatedUser
       per_page: query.per_page,

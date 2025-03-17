@@ -4,12 +4,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { GithubStrategy } from './strategy/github.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
-import { UsersModule } from 'src/users/users.module';
-import { AuthService } from './auth.service';
 
 @Module({
   imports: [
-    UsersModule,
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => {
         return {
@@ -21,6 +18,6 @@ import { AuthService } from './auth.service';
     }),
   ],
   controllers: [AuthController],
-  providers: [JwtStrategy, GithubStrategy, AuthService],
+  providers: [JwtStrategy, GithubStrategy ],
 })
 export class AuthModule {}

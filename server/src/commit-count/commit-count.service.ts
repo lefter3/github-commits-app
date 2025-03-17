@@ -33,7 +33,16 @@ export class CommitCountService {
     );
   }
 
-  async getCommitCountRecords() {
-    return this.commitCountRepo.find();
+  async getCommitCountRecords(username: string) {
+    return this.commitCountRepo.find({
+      where: {
+        username
+      },
+      select: {
+        repo: true,
+        commitsDate: true,
+        count: true
+      }
+    })
   }
 }

@@ -1,7 +1,7 @@
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { CommitCountQueue } from './commit-count-queue';
+import { CommitCountQueue } from './commitCount/commit-count-queue';
 
 @Module({
   imports: [

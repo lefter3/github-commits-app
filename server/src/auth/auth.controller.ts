@@ -1,14 +1,15 @@
 import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthRequest } from 'src/dto/request.dto';
-import { UsersService } from 'src/users/users.service';
+import { UserCreatedEvent } from 'src/events/user-created.event';
 
 @Controller('auth')
 export class AuthController {
   constructor(
-    private readonly userService: UsersService,
     private readonly jwt: JwtService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   @Get()
@@ -18,15 +19,20 @@ export class AuthController {
   @Get('callback')
   @UseGuards(AuthGuard('github'))
   authCallback(@Req() req: AuthRequest) {
-    this.userService.afterGithubLogin(req.user); // await?
+    this.eventEmitter.emit(UserCreatedEvent.name, new UserCreatedEvent(req.user.ghToken, req.user.username))
     return {
       token: this.jwt.sign(req.user),
+      name: req.user.displayName,
+      username: req.user.username,
     };
   }
 
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
   getMe(@Req() req: AuthRequest) {
-    return req.user;
-  }
+    return {
+      name: req.user.displayName,
+      username: req.user.username,
+    }
+    }
 }

@@ -35,4 +35,5 @@ export class CommitCountService {
 
   async getCommitCountRecords() {
     return this.commitCountRepo.find();
+  }
 }

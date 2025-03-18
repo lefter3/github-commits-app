@@ -23,9 +23,10 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
     if (!profile.username) {
       throw new Error('Invalid profile');
     }
+    console.log(accessToken)
     return {
       username: profile.username,
-      ghToken: accessToken,
+      token: accessToken,
       displayName: profile.displayName,
     };
   }

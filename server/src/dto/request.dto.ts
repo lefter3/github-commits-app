@@ -1,6 +1,6 @@
 export class TokenPayload {
   username: string;
-  ghToken: string;
+  token: string;
   displayName: string;
 }
 

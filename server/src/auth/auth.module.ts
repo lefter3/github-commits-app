@@ -1,12 +1,18 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GithubStrategy } from './strategy/github.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
+import { AuthService } from './auth.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Tokens } from 'src/entities/tokens.entity';
 
 @Module({
   imports: [
+    ConfigModule,
+    TypeOrmModule,
+    TypeOrmModule.forFeature([Tokens]),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => {
         return {
@@ -18,6 +24,5 @@ import { JwtStrategy } from './strategy/jwt.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [JwtStrategy, GithubStrategy ],
 })
 export class AuthModule {}

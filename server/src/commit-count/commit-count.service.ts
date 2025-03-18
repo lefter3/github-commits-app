@@ -8,7 +8,7 @@ import { InsertResult, Repository } from 'typeorm';
 export class CommitCountService {
   constructor(
     @InjectRepository(CommitCount)
-    private commitCountRepo: Repository<CommitCount>,
+    private readonly commitCountRepo: Repository<CommitCount>,
   ) {}
 
   async saveCommitCountRecords(

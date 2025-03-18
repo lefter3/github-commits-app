@@ -15,11 +15,11 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       isGlobal: true,
     }),
     DatabaseModule,
+    EventEmitterModule.forRoot(),
     QueuesModule,
     AuthModule,
     GithubApiModule,
     CommitCountModule,
-    EventEmitterModule.forRoot()
 
   ],
   controllers: [AppController],

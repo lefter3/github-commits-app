@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, Req, UseGuards } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
@@ -19,12 +19,17 @@ export class AuthController {
   @Get('callback')
   @UseGuards(AuthGuard('github'))
   authCallback(@Req() req: AuthRequest) {
-    this.eventEmitter.emit(UserCreatedEvent.name, new UserCreatedEvent(req.user.ghToken, req.user.username))
+    this.eventEmitter.emit(UserCreatedEvent.name, new UserCreatedEvent(req.user.token, req.user.username))
     return {
       token: this.jwt.sign(req.user),
       name: req.user.displayName,
       username: req.user.username,
     };
+  }
+
+  @Get('callback/web')
+  webCallback(@Query() code: string){
+    
   }
 
   @Get('me')

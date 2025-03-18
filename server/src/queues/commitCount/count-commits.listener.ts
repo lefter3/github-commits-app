@@ -23,7 +23,7 @@ export class CountCommitsListener {
 
   @OnEvent(UserCreatedEvent.name)
   async afterGithubLogin(payload: TokenPayload) {
-    const { ghToken, username } = payload;
+    const { token, username } = payload;
     let since: string | null = null;
 
     const user = await this.userRepository.findOneBy({ username });
@@ -38,7 +38,7 @@ export class CountCommitsListener {
     }
 
     const repositories =
-      this.githubApiService.getAllRepositoriesForUser(ghToken);
+      this.githubApiService.getAllRepositoriesForUser(token);
     for await (const { data: repos } of repositories) {
       for (const repo of repos) {
         const payload: CountCommitsJob = {

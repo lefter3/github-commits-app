@@ -1,20 +1,29 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-
-const routes: Array<RouteRecordRaw> = [
+import { useAuth } from '@/store/auth'
+import { createRouter, createWebHistory } from 'vue-router'
+import  HomeView  from '../views/HomeView.vue'
+import AboutView from '../views/AboutView.vue'
+import LoginView from '../views/LoginView.vue'
+const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: HomeView,
+    meta: { requiresAuth: true },
   },
   {
     path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
+    name: 'about',    component: AboutView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/login',
+    name: 'login',    component: LoginView,
+    meta: { requiresAuth: false },
+  },
+  {
+    path: '/:catchAll(.*)',
+    redirect: '/', 
+  },
 ]
 
 const router = createRouter({
@@ -22,4 +31,14 @@ const router = createRouter({
   routes
 })
 
+router.beforeEach((to, from, next) => {
+  const { isAuthenticating, user } = useAuth()
+  // Not logged into a guarded route?
+  if ( isAuthenticating.value === false && to.meta.requiresAuth === true && !user?.value ) {
+    console.log('requires auth, redirect to login');
+
+    next({ name: 'login' })
+  }
+  else next()
+})
 export default router

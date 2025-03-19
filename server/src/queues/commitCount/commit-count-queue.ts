@@ -4,9 +4,13 @@ import { COUNT_COMMITS_QUEUE_NAME } from 'src/config/constants';
 import { CountCommitsWorker } from './count-commits.worker';
 import { CommitCountModule } from 'src/commit-count/commit-count.module';
 import { GithubApiModule } from 'src/github-api/github-api.module';
+import { CountCommitsListener } from './count-commits.listener';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from 'src/entities/users.entity';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([User]),
     CommitCountModule,
     GithubApiModule,
     BullModule.registerQueue({
@@ -20,7 +24,7 @@ import { GithubApiModule } from 'src/github-api/github-api.module';
       },
     }),
   ],
-  providers: [CountCommitsWorker],
+  providers: [CountCommitsWorker, CountCommitsListener],
   exports: [],
 })
 export class CommitCountQueue {}

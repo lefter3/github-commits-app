@@ -17,7 +17,7 @@ export class AuthService {
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
     private eventEmitter: EventEmitter2,
-    @InjectRepository(Tokens)
+    @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @InjectRepository(Tokens)
     private readonly tokenRepository: Repository<Tokens>,
@@ -66,10 +66,16 @@ export class AuthService {
     // transaction?
   }
 
-  async exchangeCodeForToken(code: string): Promise<string> {
+  async exchangeCodeForToken(code: string): Promise<TokenPayload> {
     const entry = await this.tokenRepository.findOneBy({ code });
     if (!entry) throw new UnauthorizedException();
-    await this.tokenRepository.delete({ code });
-    return entry.token;
+    this.tokenRepository.delete({ code }).catch(err => console.log(err));
+    const payload: TokenPayload = this.jwtService.decode(entry.token)
+    return {
+      token: entry.token,
+      displayName: payload.displayName ?? '',
+      username: payload.username
+    };
+
   }
 }

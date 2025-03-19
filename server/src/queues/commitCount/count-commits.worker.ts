@@ -55,20 +55,20 @@ export class CountCommitsWorker extends WorkerHost {
     };
   }
 
-  // @OnWorkerEvent('completed')
-  // onCompleted(job: Job) {
-  //   const { id, name, queueName, finishedOn, returnvalue } = job;
-  //   const completionTime = finishedOn ? new Date(finishedOn).toISOString() : '';
-  //   console.log(
-  //     `Job id: ${id}, name: ${name} completed in queue ${queueName} on ${completionTime}. Result: ${returnvalue}`,
-  //   );
-  // }
+  @OnWorkerEvent('completed')
+  onCompleted(job: Job) {
+    const { id, name, queueName, finishedOn, returnvalue } = job;
+    const completionTime = finishedOn ? new Date(finishedOn).toISOString() : '';
+    console.log(
+      `Job id: ${id}, name: ${name} completed in queue ${queueName} on ${completionTime}. Result: ${returnvalue}`,
+    );
+  }
 
-  // @OnWorkerEvent('failed')
-  // onFailed(job: Job) {
-  //   const { id, name, queueName, failedReason } = job;
-  //   console.error(
-  //     `Job id: ${id}, name: ${name} failed in queue ${queueName}. Failed reason: ${failedReason}`,
-  //   );
-  // }
+  @OnWorkerEvent('failed')
+  onFailed(job: Job) {
+    const { id, name, queueName, failedReason } = job;
+    console.error(
+      `Job id: ${id}, name: ${name} failed in queue ${queueName}. Failed reason: ${failedReason}`,
+    );
+  }
 }

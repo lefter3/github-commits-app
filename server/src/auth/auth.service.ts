@@ -1,57 +1,75 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { JwtService } from '@nestjs/jwt';
-import { createOAuthAppAuth } from '@octokit/auth-oauth-app';
-import { Octokit } from '@octokit/rest';
+import { InjectRepository } from '@nestjs/typeorm';
+import { StoreUserDto } from 'src/dto/auth.dto';
 import { TokenPayload } from 'src/dto/request.dto';
 import { Tokens } from 'src/entities/tokens.entity';
-import { UserCreatedEvent } from 'src/events/user-created.event';
+import { User } from 'src/entities/users.entity';
+import { UserStoredEvent } from 'src/events/user-created.event';
+import { getYMDFormat } from 'src/util/utils';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
-  private githubAuth;
   constructor(
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
     private eventEmitter: EventEmitter2,
+    @InjectRepository(Tokens)
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(Tokens)
     private readonly tokenRepository: Repository<Tokens>,
-  ) {
-    this.githubAuth = createOAuthAppAuth({
-      clientType: 'oauth-app',
-      clientId: this.configService.getOrThrow('GITHUB_CLIENT_ID'),
-      clientSecret: this.configService.getOrThrow('GITHUB_CLIENT_SECRET'),
-    });
+  ) {}
+
+  createAppToken(payload: TokenPayload) {
+    return this.jwtService.sign(payload);
   }
 
-  async exchangeCodeForToken(code: string): Promise<TokenPayload> {
-    const user = await this.githubAuth({
-      type: 'oauth-user',
+  async storeUser(payload: StoreUserDto): Promise<boolean> {
+    const { token, username, code } = payload;
+    let since: string | null = null;
+    try {
+      const user = await this.userRepository.findOneBy({ username });
+      if (!user) {
+        await this.userRepository.insert({
+          username,
+          lastLogin: getYMDFormat(),
+        });
+      } else {
+        since = getYMDFormat(user.lastLogin);
+        await this.userRepository.update(user.id, { lastLogin: since });
+      }
+
+      this.eventEmitter.emit(UserStoredEvent.name, {
+        token,
+        username,
+        since, // get last commit stored
+      });
+    } catch (error) {
+      console.error(error);
+      return false;
+      // throw new HttpException("User was not ")
+    }
+
+    const appToken = this.createAppToken({
+      token: payload.token,
+      username: payload.username,
+      displayName: payload.displayName,
+    });
+    await this.tokenRepository.insert({
+      token: appToken,
       code,
     });
-    if (!user?.token) {
-      throw new BadRequestException('Code is invalid');
-    }
-    const token = user.token;
-    const octokit = new Octokit({
-      auth: token,
-    });
+    return true;
+    // transaction?
+  }
 
-    const { data: userData } = await octokit.users.getAuthenticated();
-    this.eventEmitter.emit(
-      UserCreatedEvent.name,
-      new UserCreatedEvent(user.token, userData.login),
-    );
-
-    return {
-      token: this.jwtService.sign({
-        token,
-        username: userData.login,
-        displayName: userData.name,
-      }),
-      username: userData.login,
-      displayName: userData.name ?? "",
-    };
+  async exchangeCodeForToken(code: string): Promise<string> {
+    const entry = await this.tokenRepository.findOneBy({ code });
+    if (!entry) throw new UnauthorizedException();
+    await this.tokenRepository.delete({ code });
+    return entry.token;
   }
 }

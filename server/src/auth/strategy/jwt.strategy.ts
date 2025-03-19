@@ -6,7 +6,7 @@ import { TokenPayload } from 'src/dto/request.dto';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt' ) {
-  constructor(configService: ConfigService) {
+  constructor(private configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken() ?? '',
       ignoreExpiration: false,
@@ -15,6 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt' ) {
   }
 
   validate(payload: TokenPayload) {
+    // check gh token
     return payload
   }
 }

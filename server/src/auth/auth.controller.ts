@@ -1,10 +1,9 @@
-import { Controller, Get, Query, Req, UseGuards } from '@nestjs/common';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { Controller, Get, Query, Redirect, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthRequest } from 'src/dto/request.dto';
-import { UserCreatedEvent } from 'src/events/user-created.event';
 import { AuthService } from './auth.service';
+import { Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -15,28 +14,24 @@ export class AuthController {
 
   @Get()
   @UseGuards(AuthGuard('github'))
-  async login(@Query() code) {
-    // return this.authService.githubAuthorize()
-  }
-
+  async login() {}
 
   @Get('callback')
-  // @UseGuards(AuthGuard('github'))
-  authCallback(@Req() req: AuthRequest, @Query() code) {
-    return code
-    // return {
-    //   token: this.jwt.sign(req.user),
-    //   name: req.user.displayName,
-    //   username: req.user.username,
-    // };
+  @UseGuards(AuthGuard('github'))
+  @Redirect()
+  async authCallback(@Req() req: AuthRequest, @Query() code, @Res() res) {
+    const isUserStored = await this.authService.storeUser({
+      token: req.user.token,
+      username: req.user.username,
+      code,
+      displayName: req.user.displayName,
+    });
+    if (isUserStored) res.redirect(`/?code=${code}`);
+    throw new UnauthorizedException()
   }
 
   @Get('me')
-  @UseGuards(AuthGuard('jwt'))
-  getMe(@Req() req: AuthRequest) {
-    return {
-      name: req.user.displayName,
-      username: req.user.username,
-    }
-    }
+  getMe(@Query() code ) {
+    return this.authService.exchangeCodeForToken(code)
+  }
 }

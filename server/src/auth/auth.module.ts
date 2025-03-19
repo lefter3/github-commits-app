@@ -7,11 +7,12 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { AuthService } from './auth.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Tokens } from '../entities/tokens.entity';
+import { User } from 'src/entities/users.entity';
 
 @Module({
   imports: [
     ConfigModule,
-    TypeOrmModule.forFeature([Tokens]),
+    TypeOrmModule.forFeature([Tokens, User]),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => {
         return {

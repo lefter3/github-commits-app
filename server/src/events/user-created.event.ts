@@ -1,10 +1,18 @@
-export class UserCreatedEvent {
-  public readonly name = 'user.login';
-  public readonly username: string;
-  public readonly token: string;
+export class UserStoredEvent {
+   readonly name = 'user.stored';
+   readonly username: string;
+   readonly token: string;
+  readonly since: string;
 
-  constructor(token: string, username: string) {
-    this.username = username
-    this.token = token
+  constructor(payload: UserStoredEventPayload) {
+    this.username = payload.username
+    this.token = payload.token
+    this.since = payload.since
   }
+}
+
+interface UserStoredEventPayload {
+    token:string;
+    username: string;
+    since: string
 }

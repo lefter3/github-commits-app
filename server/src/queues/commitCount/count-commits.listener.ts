@@ -7,7 +7,7 @@ import { COUNT_COMMITS_QUEUE_NAME } from 'src/config/constants';
 import { CountCommitsJob } from 'src/dto/countCommits.dto';
 import { TokenPayload } from 'src/dto/request.dto';
 import { User } from 'src/entities/users.entity';
-import { UserCreatedEvent } from 'src/events/user-created.event';
+import { UserStoredEvent } from 'src/events/user-created.event';
 import { GithubApiService } from 'src/github-api/github-api.service';
 import { getYMDFormat } from 'src/util/utils';
 import { Repository } from 'typeorm';
@@ -20,38 +20,30 @@ export class CountCommitsListener {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
+  @OnEvent(UserStoredEvent.name)
+  async userLoggedIn(payload: UserStoredEvent) {
+    const { token, username, since } = payload;
 
-  @OnEvent(UserCreatedEvent.name)
-  async afterGithubLogin(payload: TokenPayload) {
-    const { token, username } = payload;
-    let since: string | null = null;
-
-    const user = await this.userRepository.findOneBy({ username });
-    if (!user) {
-      await this.userRepository.save({
-        username,
-        lastLogin: getYMDFormat(),
-      });
-    } else {
-      since = getYMDFormat(user.lastLogin);
-      await this.userRepository.update(user.id, { lastLogin: since });
-    }
-
-    const repositories =
-      this.githubApiService.getAllRepositoriesForUser(token);
-    for await (const { data: repos } of repositories) {
-      for (const repo of repos) {
-        const payload: CountCommitsJob = {
-          author: username,
-          owner: repo.owner.login,
-          repo: repo.name,
-          ...(since && { since }),
-        };
-        this.countCommitsQueue.add('countCommits', payload); // await?
+    try {
+      const repositories =
+        this.githubApiService.getAllRepositoriesForUser(token);
+      for await (const { data: repos } of repositories) {
+        for (const repo of repos) {
+          const payload: CountCommitsJob = {
+            author: username,
+            owner: repo.owner.login,
+            repo: repo.name,
+            ...(since && { since }),
+          };
+          this.countCommitsQueue.add('countCommits', payload).catch((err) => {
+            console.log(err, JSON.stringify(payload));
+          }); // await?
+        }
       }
+    } catch (error) {
+      console.log(error);
     }
   }
-
 
   @OnWorkerEvent('completed')
   onCompleted(job: Job) {

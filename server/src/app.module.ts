@@ -8,6 +8,8 @@ import { GithubApiModule } from './github-api/github-api.module';
 import { CommitCountModule } from './commit-count/commit-count.module';
 import { QueuesModule } from './queues/queues.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ServeStaticModule } from '@nestjs/serve-static'; // New
+import { join } from 'path'; // New
 
 @Module({
   imports: [
@@ -20,7 +22,9 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     AuthModule,
     GithubApiModule,
     CommitCountModule,
-
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../..', 'github-commits/dist'), // New
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

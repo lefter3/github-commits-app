@@ -6,12 +6,11 @@ import { GithubStrategy } from './strategy/github.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { AuthService } from './auth.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Tokens } from 'src/entities/tokens.entity';
+import { Tokens } from '../entities/tokens.entity';
 
 @Module({
   imports: [
     ConfigModule,
-    TypeOrmModule,
     TypeOrmModule.forFeature([Tokens]),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => {
@@ -23,6 +22,7 @@ import { Tokens } from 'src/entities/tokens.entity';
       inject: [ConfigService],
     }),
   ],
+  providers: [AuthService, GithubStrategy, JwtStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}

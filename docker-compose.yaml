@@ -62,16 +62,6 @@ services:
       timeout: 2s
       retries: 10
 
-  app_fe:
-    container_name: app_fe
-    build:
-      context: .
-      dockerfile: Dockerfile.client
-    ports:
-      - "8080:8080"
-    networks: 
-      - app_network
-
 networks:
   app_network:
     driver: bridge

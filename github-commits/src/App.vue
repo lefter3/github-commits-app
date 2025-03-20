@@ -16,7 +16,7 @@
 <script lang="ts">
 import { computed, defineComponent, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useAuth } from "./store/auth";
+import { useAuth } from "./modules/auth";
 
 export default defineComponent({
   setup() {
@@ -27,7 +27,7 @@ export default defineComponent({
       return !!user?.value
     })
     watch([ user ], () => {
-      if ( isAuthenticating.value === false && route.meta.requiresAuth === true && user?.value) {
+      if ( isAuthenticating.value === false && route.meta.requiresAuth === true && !user?.value) {
         console.log('redirecting home in app.vue');
 
         router.push({ name: 'home' })
@@ -101,9 +101,10 @@ export default defineComponent({
               color: #FFBF00; /* Amber */
           }
           .list {
+              margin: 0 auto;
+              max-width: 600px;
               list-style-type: none;
               padding: 0;
-              margin: 20px 0;
           }
           .list-item {
               border: 1px solid #FFBF00; /* Amber */
@@ -120,7 +121,7 @@ export default defineComponent({
               margin: 20px 0;
               text-align: center;
           }
-          .pagination a {
+          .pagination button {
               color: #FFBF00; /* Amber */
               margin: 0 5px;
               text-decoration: none;

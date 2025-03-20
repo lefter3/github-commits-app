@@ -1,24 +1,30 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <h1>{{ name }}</h1>
+    <h3>{{ username }}</h3>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import { computed, defineComponent } from "vue";
+import { useAuth } from "../modules/auth";
 
 export default defineComponent({
-  name: 'HomeView',
-  components: {
-    HelloWorld,
+  setup() {
+    const { user } = useAuth();
+    console.log(user?.value)
+    const name = computed(() => {
+      return user?.value && user.value.displayName
+        ? `Hey, ${user.value.displayName}`
+        : "Welcome back!";
+    });
+
+    const username = computed(
+      () =>
+        user?.value?.username
+    );
+
+    return { user, name, username };
   },
-  setup(){
-    fetch('/api/auth').then()
-    .then(async res=>{
-      console.log( await res.json())
-    })
-  }
 });
 </script>

@@ -21,7 +21,7 @@ import { join } from 'path'; // New
     GithubApiModule,
     CommitCountModule,
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../..', 'github-commits/dist'),
+      rootPath: join(__dirname, '../', 'client-build/dist'),
     }),
   ],
 })

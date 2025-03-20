@@ -40,7 +40,7 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   getMe(@Req() req: AuthRequest) {
     return {
-      name: req.user.displayName,
+      displayName: req.user.displayName,
       username: req.user.username,
     }
     }

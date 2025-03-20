@@ -6,7 +6,7 @@ import { useAuth } from './auth'
 
 export const useApiWithAuth = (endpoint: string) => {
   const { user } = useAuth()
-
+  console.log(user?.value?.token)
   return useApi(endpoint, user?.value ? user.value.token : undefined)
 }
 
@@ -23,11 +23,18 @@ export const useApi = (endpoint: string, access_token?: string) => {
   const loading = ref(false)
   const error = ref()
 
-  const get = (config?: AxiosRequestConfig) => {
+  const get = (query?: Record<string, any>, config?: AxiosRequestConfig) => {
     loading.value = true
     error.value = undefined
 
-    return api.get(endpoint, config)
+    let queryString = ''
+
+    if ( query ) {
+      queryString = '?' + Object.entries(query)
+        .map(([ key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+        .join('&')
+    }
+    return api.get(endpoint + queryString, config)
       .then(res => data.value = res.data)
       .catch(e => {
         error.value = e

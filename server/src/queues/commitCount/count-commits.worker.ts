@@ -19,40 +19,45 @@ export class CountCommitsWorker extends WorkerHost {
     const newCounts: CommitCountDto[] = [];
     const iterator = this.githubApiService.getUserCommitsForRepo(job.data);
     // group commits by date
-    for await (const { data: commits } of iterator) {
-      for (const commit of commits) {
-        const date = getYMDFormat(commit.commit.author?.date); // date not undefined
-        if (commitCounts[date]) {
-          commitCounts[date]++;
-        } else {
-          commitCounts[date] = 1;
+    try {
+      for await (const { data: commits } of iterator) {
+        for (const commit of commits) {
+          const date = getYMDFormat(commit.commit.author?.date); // date not undefined
+          if (commitCounts[date]) {
+            commitCounts[date]++;
+          } else {
+            commitCounts[date] = 1;
+          }
         }
       }
-    }
-    // save commit counts
-    for (const [date, count] of Object.entries(commitCounts)) {
-      if (isDateToday(date)) {
-        await this.commitCountService.updateTodayRecord({
-          count,
-          repo: job.data.repo,
-          username: job.data.author,
-          commitsDate: date,
-        });
-      } else {
-        newCounts.push({
-          count,
-          repo: job.data.repo,
-          username: job.data.author,
-          commitsDate: date,
-        });
+      // save commit counts
+      for (const [date, count] of Object.entries(commitCounts)) {
+        if (isDateToday(date)) {
+          await this.commitCountService.updateTodayRecord({
+            count,
+            repo: job.data.repo,
+            username: job.data.author,
+            commitsDate: date,
+          });
+        } else {
+          newCounts.push({
+            count,
+            repo: job.data.repo,
+            username: job.data.author,
+            commitsDate: date,
+          });
+        }
       }
+      const saved = this.commitCountService.saveCommitCountRecords(newCounts);
+
+      return {
+        newCounts: saved,
+        repository: job.data.repo,
+        author: job.data.author,
+      };
+    } catch (err) {
+      console.log(err);
     }
-    const saved = this.commitCountService.saveCommitCountRecords(newCounts);
-    return {
-      newCounts: saved,
-      repository: job.data.repo,
-      author: job.data.author,
-    };
   }
 
   @OnWorkerEvent('completed')
@@ -60,7 +65,7 @@ export class CountCommitsWorker extends WorkerHost {
     const { id, name, queueName, finishedOn, returnvalue } = job;
     const completionTime = finishedOn ? new Date(finishedOn).toISOString() : '';
     console.log(
-      `Job id: ${id}, name: ${name} completed in queue ${queueName} on ${completionTime}. Result: ${returnvalue}`,
+      `Job id: ${id}, name: ${name} completed in queue ${queueName} on ${completionTime}. Result: ${JSON.stringify(returnvalue)}`,
     );
   }
 

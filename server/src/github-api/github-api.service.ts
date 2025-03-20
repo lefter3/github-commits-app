@@ -9,8 +9,7 @@ export class GithubApiService {
 
   listRepositoriesForUser(token: string, query: PaginationDto) {
     const octokit = new Octokit({ auth: token });
-    return octokit.rest.repos.listForAuthenticatedUser({
-      //listReposStarredByAuthenticatedUser
+    return octokit.rest.activity.listReposStarredByAuthenticatedUser({
       per_page: query.per_page,
       page: query.page,
     });
@@ -19,8 +18,7 @@ export class GithubApiService {
   getAllRepositoriesForUser(token: string) {
     const octokit = new Octokit({ auth: token });
     return octokit.paginate.iterator(
-      octokit.rest.repos.listForAuthenticatedUser,
-      // listReposStarredByAuthenticatedUser
+      octokit.rest.activity.listReposStarredByAuthenticatedUser,
       {
         per_page: 100,
       },

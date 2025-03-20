@@ -69,13 +69,12 @@ export class AuthService {
   async exchangeCodeForToken(code: string): Promise<TokenPayload> {
     const entry = await this.tokenRepository.findOneBy({ code });
     if (!entry) throw new UnauthorizedException();
-    this.tokenRepository.delete({ code }).catch(err => console.log(err));
-    const payload: TokenPayload = this.jwtService.decode(entry.token)
+    this.tokenRepository.delete({ code }).catch((err) => console.log(err));
+    const payload: TokenPayload = this.jwtService.decode(entry.token);
     return {
       token: entry.token,
       displayName: payload.displayName ?? '',
-      username: payload.username
+      username: payload.username,
     };
-
   }
 }

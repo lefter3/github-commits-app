@@ -8,10 +8,11 @@ import { TokenPayload } from 'src/dto/request.dto';
 export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
   constructor(configService: ConfigService) {
     super({
-      clientID: configService.get('GITHUB_CLIENT_ID') ?? '',
-      clientSecret: configService.get<string>('GITHUB_CLIENT_SECRET') ?? '',
+      clientID: configService.getOrThrow('GITHUB_CLIENT_ID'),
+      clientSecret:
+        configService.getOrThrow<string>('GITHUB_CLIENT_SECRET') ?? '',
       callbackURL: 'http://localhost:3000/auth/callback',
-      scope: ['repo']
+      scope: ['repo'],
     });
   }
 

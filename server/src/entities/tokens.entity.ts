@@ -3,7 +3,7 @@ import { BaseEntity } from './baseEntity';
 
 @Entity()
 export class Tokens extends BaseEntity {
-  @Column({ type: 'varchar'})
+  @Column({ type: 'varchar' })
   code: string;
 
   @Column({

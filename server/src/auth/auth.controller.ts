@@ -1,4 +1,13 @@
-import { BadRequestException, Controller, Get, Query, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  Query,
+  Req,
+  Res,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthRequest } from 'src/dto/request.dto';
@@ -27,21 +36,21 @@ export class AuthController {
     if (isUserStored) {
       return res.redirect(`/?code=${code}`);
     }
-    throw new UnauthorizedException()
+    throw new UnauthorizedException();
   }
 
   @Get('token')
-  getToken(@Query('code') code: string ) {
-    if (!code) throw new BadRequestException()
-    return this.authService.exchangeCodeForToken(code)
+  getToken(@Query('code') code: string) {
+    if (!code) throw new BadRequestException();
+    return this.authService.exchangeCodeForToken(code);
   }
-  
+
   @Get('me')
   @UseGuards(AuthGuard('jwt'))
   getMe(@Req() req: AuthRequest) {
     return {
       displayName: req.user.displayName,
       username: req.user.username,
-    }
-    }
+    };
+  }
 }

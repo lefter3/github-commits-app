@@ -1,8 +1,8 @@
-import { InjectQueue, OnWorkerEvent } from '@nestjs/bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Job, Queue } from 'bullmq';
+import { Queue } from 'bullmq';
 import { COUNT_COMMITS_QUEUE_NAME } from 'src/config/constants';
 import { CountCommitsJob } from 'src/dto/countCommits.dto';
 import { User } from 'src/entities/users.entity';
@@ -34,7 +34,7 @@ export class CountCommitsListener {
             ...(since && { since }),
           };
           this.countCommitsQueue.add('countCommits', payload).catch((err) => {
-            console.log(err)
+            console.log(err);
           }); // await?
         }
       }
@@ -42,5 +42,4 @@ export class CountCommitsListener {
       console.log(error);
     }
   }
-
 }

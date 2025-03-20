@@ -1,18 +1,10 @@
 # use this template for `.env` in root of project
 # Postgres
-DB_HOST=localhost
-POSTGRES_DB=db_name
 POSTGRES_USER=user_here
 POSTGRES_PASSWORD=strong_password_here
-POSTGRES_PORT=5432
-
-# Redis
-REDIS_HOST=localhost
-REDIS_PORT=6379
-
 
 # AUTH / JWT
 JWT_SECRET=strong_encrypted_key_here
 
-GITHUB_CLIENT_ID=efre
-GITHUB_CLIENT_SECRET=ethteshtet
+GITHUB_CLIENT_ID=Ov23liDGtPlPAD1fAM1x
+GITHUB_CLIENT_SECRET=f19a1d9bf54bd58d8576635a946713b5c44c5cc2

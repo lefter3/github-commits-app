@@ -1,5 +1,5 @@
 // import api from './api'
-import { computed, inject, reactive, toRefs, watch } from 'vue'
+import { reactive, toRefs, watch } from 'vue'
 import { useApi } from './api'
 
 export const AUTH_KEY = 'app_user'
@@ -53,7 +53,6 @@ else {
                     window.localStorage.removeItem(AUTH_KEY)
                 }
                 else if ( data.value ) {
-                    console.log(data.value)
                     state.user = {
                         token,
                         ...data.value

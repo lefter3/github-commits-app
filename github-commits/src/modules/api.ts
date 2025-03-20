@@ -6,7 +6,6 @@ import { useAuth } from './auth'
 
 export const useApiWithAuth = (endpoint: string) => {
   const { user } = useAuth()
-  console.log(user?.value?.token)
   return useApi(endpoint, user?.value ? user.value.token : undefined)
 }
 

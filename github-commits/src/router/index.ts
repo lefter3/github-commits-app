@@ -1,9 +1,9 @@
 import { useAuth } from '@/modules/auth'
 import { createRouter, createWebHistory } from 'vue-router'
 import  HomeView  from '../views/HomeView.vue'
-import AboutView from '../views/AboutView.vue'
 import LoginView from '../views/LoginView.vue'
 import ListRepositories from '@/views/ListRepositories.vue'
+import CommitView from '@/views/CommitView.vue'
 const routes = [
   {
     path: '/',
@@ -12,13 +12,13 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
-    path: '/about',
-    name: 'about',    component: AboutView,
+    path: '/repositories',
+    name: 'repositories',    component: ListRepositories,
     meta: { requiresAuth: true },
   },
   {
-    path: '/repositories',
-    name: 'repositories',    component: ListRepositories,
+    path: '/commits',
+    name: 'commits',    component: CommitView,
     meta: { requiresAuth: true },
   },
   {

@@ -1,13 +1,5 @@
-// export function getPageNumberFromRel(relString: string, relType: string) {
-//     const regex = new RegExp(`<https://api.github.com/repositories/\\d+/issues\\?page=(\\d+)>; rel="${relType}"`);
-//     const match = relString.match(regex);
-//     return match ? parseInt(match[1], 10) : null;
-//   }
   export function getPageNumberFromRel(linkHeader: string, rel: string): number {
     if (!linkHeader) 1;
-  
-    // const nextPattern = /(?<=<)([\S]*)(?=>; rel="Next")/i;
-    // return linkHeader.match(nextPattern)[0] ?? 1;
     const regex = new RegExp(`<([^>]+)>;\\s*rel="${rel}"`);
     const match = linkHeader.match(regex);
     if (match) {
@@ -16,4 +8,30 @@
     }
   
     return 1;
+  }
+  export function groupBy(array: any, property: string) {
+    return array.reduce((acc: any, obj: any) => {
+      const key = obj[property];
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(obj);
+      return acc;
+    }, {});
+  }
+  
+  export function prepareDatasets(data: any): any[]{
+    const groupByRepo = groupBy(data, 'repo')
+    console.log('groupbyrepo', groupByRepo)
+    const datasets: any[] = []
+    Object.keys(groupByRepo).map((repoName)=>{
+        datasets.push({
+          label: repoName,
+          data: groupByRepo[repoName].map((obj: any) => { return {
+            date: obj.commitsDate,
+            commits: obj.count
+        }}),
+            });
+      })
+    return datasets
   }

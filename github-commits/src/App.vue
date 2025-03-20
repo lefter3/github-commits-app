@@ -2,8 +2,9 @@
   <div class="container">
 
     <nav v-if="isAuthenticated">
-      <router-link to="/">Home</router-link>
-      <router-link to="/about">About</router-link>
+      <router-link to="/home">Home</router-link>
+      <router-link to="/repositories">Repositories</router-link>
+      <router-link to="/commits">Commits</router-link>
     </nav>
     <template v-if="isAuthenticating">
       <h1>Loading...</h1>
@@ -133,5 +134,10 @@ export default defineComponent({
           .pagination a:hover {
               background-color: #FFBF00; /* Amber */
               color: black;
+          }
+          .nested-list {
+            list-style-type: none; /* No bullets */
+            padding-left: 20px; /* Indent nested items */
+            display: block; /* Initially hide nested items */
           }
 </style>

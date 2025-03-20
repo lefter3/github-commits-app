@@ -17,7 +17,7 @@
   
   <script lang="ts">
   import { computed, defineComponent, ref, watch } from "vue";  
-  import { useApi, useApiWithAuth } from "../modules/api";
+  import { useApiWithAuth } from "../modules/api";
 import { getPageNumberFromRel } from "@/utils/util";
 import { useAuth } from "@/modules/auth";
   
